@@ -4,12 +4,4 @@ public class Ui {
 	public void greeting(){
 		System.out.println("Вас приветствует программа шифратор Цезаря");
 	}
-
-	private
-
-
-
-
-
-
 }

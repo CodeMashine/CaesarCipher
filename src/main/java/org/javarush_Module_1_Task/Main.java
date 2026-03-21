@@ -9,7 +9,9 @@ public class Main {
 
 	public static void main(String[] args) {
 		CaesarCipher caesarCipher = new CaesarCipher();
-		caesarCipher.uiGreeting();
+//		caesarCipher.uiGreeting();/
+		caesarCipher.encrypt();
+
 	}
 
 

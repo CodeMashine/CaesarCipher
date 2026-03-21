@@ -30,7 +30,7 @@ public class FileManager {
 
 	public FileChannel writeFileChannel(String address) {
 		try {
-			RandomAccessFile aFile = new RandomAccessFile(address, "w");
+			RandomAccessFile aFile = new RandomAccessFile(address, "rw");
 			FileChannel channel = aFile.getChannel();
 			return channel;
 		} catch ( Exception e ) {
