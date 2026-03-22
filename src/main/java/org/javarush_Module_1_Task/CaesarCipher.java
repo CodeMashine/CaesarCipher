@@ -42,16 +42,38 @@ public class CaesarCipher {
 //		System.out.println("Ведите ключ шифрования");
 //		int key = scanner.nextInt();
 
-		String sourceAddress = "E:\\java\\CaesarCipher\\CaesarCipher\\src\\main\\java\\sourseText\\test.txt";
-		String destAddress = "E:\\java\\CaesarCipher\\CaesarCipher\\src\\main\\java\\resultText\\test.txt";
+		String sourceEncryptAddress = "E:\\java\\CaesarCipher\\CaesarCipher\\src\\main\\java\\sourceText\\test.txt";
+		String destEncryptAddress = "E:\\java\\CaesarCipher\\CaesarCipher\\src\\main\\java\\resultText\\testEncript.txt";
 		int key = 8 ;
 
-		boolean resultCheck = fileManager.checkExisting(sourceAddress);
+
+
+		boolean resultCheck = fileManager.checkExisting(sourceEncryptAddress);
 		if ( resultCheck ) {
-			FileChannel fileSourseChannel = fileManager.readFileChannel(sourceAddress);
-			FileChannel fileDestChannel = fileManager.writeFileChannel(destAddress);
+			FileChannel fileSourseChannel = fileManager.readFileChannel(sourceEncryptAddress);
+			FileChannel fileDestChannel = fileManager.writeFileChannel(destEncryptAddress);
+
 			cipher.encrypt(fileSourseChannel, key, fileDestChannel);
 		}
+	}
+
+
+	public  void decrypt() {
+		String sourceDecryptAddress = "E:\\java\\CaesarCipher\\CaesarCipher\\src\\main\\java\\sourceText\\testDecode.txt";
+		String destDecryptAddress = "E:\\java\\CaesarCipher\\CaesarCipher\\src\\main\\java\\resultText\\testDecode.txt";
+		int key = 8 ;
+
+		boolean resultCheck = fileManager.checkExisting(sourceDecryptAddress);
+		if ( resultCheck ) {
+			FileChannel fileSourseChannel = fileManager.readFileChannel(sourceDecryptAddress);
+			FileChannel fileDestChannel = fileManager.writeFileChannel(destDecryptAddress);
+
+//			cipher.encrypt(fileSourseChannel, -key, fileDestChannel);
+			cipher.decript (fileSourseChannel ,  key , fileDestChannel);
+		}
+
+
+
 	}
 
 

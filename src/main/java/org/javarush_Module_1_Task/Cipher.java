@@ -17,10 +17,15 @@ public class Cipher {
 	}
 
 
+	public void decript(FileChannel sourceChannel, int key, FileChannel destChannel) {
+		encrypt(sourceChannel, -key, destChannel);
+	}
+
+
 	public void encrypt(FileChannel sourceChannel, int key, FileChannel destChannel) {
 		ByteBuffer byteInputBuffer = ByteBuffer.allocate(1024);
 
-		ByteBuffer byteOutputBuffer = ByteBuffer.allocate(1024);
+		ByteBuffer byteOutputBuffer ;
 
 		try {
 			CharsetDecoder decoder = StandardCharsets.UTF_8.newDecoder();

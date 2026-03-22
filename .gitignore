@@ -3,7 +3,7 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 #resultText
-#sourseText
+#sourceText
 
 ### IntelliJ IDEA ###
 .idea/modules.xml

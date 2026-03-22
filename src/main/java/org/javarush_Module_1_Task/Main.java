@@ -10,10 +10,10 @@ public class Main {
 	public static void main(String[] args) {
 		CaesarCipher caesarCipher = new CaesarCipher();
 //		caesarCipher.uiGreeting();/
-		caesarCipher.encrypt();
+//		caesarCipher.encrypt();
+		caesarCipher.decrypt();
 
 	}
-
 
 
 }
