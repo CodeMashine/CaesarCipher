@@ -1,10 +1,8 @@
 package org.javarush_Module_1_Task;
 
 import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 import java.nio.CharBuffer;
 import java.nio.channels.FileChannel;
-import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
 import java.nio.charset.CharsetEncoder;
 import java.nio.charset.StandardCharsets;
@@ -12,20 +10,65 @@ import java.nio.charset.StandardCharsets;
 public class Cipher {
 	private final char[] alphabet;
 
-	public Cipher(char[] alphabet) {
+	private final String[] templatePhrases;
+
+//	private final int WRONG_NUM = -1 ;
+
+	public Cipher(char[] alphabet, String[] templatePhrases) {
 		this.alphabet = alphabet;
+		this.templatePhrases = templatePhrases;
 	}
 
 
-	public void decript(FileChannel sourceChannel, int key, FileChannel destChannel) {
+	public int findKeyToDecode(FileChannel sourceChannel) {
+		ByteBuffer byteInputBuffer = ByteBuffer.allocate(256);
+		try {
+			sourceChannel.read(byteInputBuffer);
+			CharsetDecoder decoder = StandardCharsets.UTF_8.newDecoder();
+
+			byteInputBuffer.flip();
+
+			CharBuffer inputCharBuffer = decoder.decode(byteInputBuffer);
+
+			for ( int i = 1; i < alphabet.length; i++ ) {
+				String pretendent = getDecodeText(inputCharBuffer, -i);
+				inputCharBuffer.position(0);
+				for ( String phrase : templatePhrases ) {
+					int index = pretendent.indexOf(phrase);
+					if ( index != -1 ) {
+						return i;
+					}
+				}
+			}
+		} catch ( Exception e ) {
+			throw new RuntimeException(e);
+		}
+		return -1;
+	}
+
+
+	private String getDecodeText(CharBuffer inputCharBuffer, int key) {
+		StringBuilder output = new StringBuilder();
+		while ( inputCharBuffer.hasRemaining() ) {
+			char inputChar = inputCharBuffer.get();
+			int outputIndex = getOutputIndex(inputChar, key);
+			char outputChar = getOutputChar(outputIndex);
+			output.append(outputChar);
+		}
+		return output.toString();
+	}
+
+
+	public void decrypt(FileChannel sourceChannel, int key, FileChannel destChannel) {
 		encrypt(sourceChannel, -key, destChannel);
 	}
 
 
 	public void encrypt(FileChannel sourceChannel, int key, FileChannel destChannel) {
+
 		ByteBuffer byteInputBuffer = ByteBuffer.allocate(1024);
 
-		ByteBuffer byteOutputBuffer ;
+		ByteBuffer byteOutputBuffer;
 
 		try {
 			CharsetDecoder decoder = StandardCharsets.UTF_8.newDecoder();
@@ -79,11 +122,15 @@ public class Cipher {
 			return 68;
 		}
 
-		int outputIndex = inletIndex + key;
 
-		if ( outputIndex > alphabet.length - 1 ) {
-			outputIndex = outputIndex - alphabet.length - 1;
-		}
+//		int outputIndex = inletIndex + key;
+//
+//		if ( outputIndex > alphabet.length - 1 ) {
+//			outputIndex = outputIndex - alphabet.length - 1;
+//		}
+
+		int outputIndex = Math.floorMod(inletIndex + key, alphabet.length);
+		;
 		return outputIndex;
 	}
 

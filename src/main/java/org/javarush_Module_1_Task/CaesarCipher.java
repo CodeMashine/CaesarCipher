@@ -4,14 +4,16 @@ import java.nio.channels.FileChannel;
 import java.util.Scanner;
 
 public class CaesarCipher {
-	char[] alphabet = {'А', 'Б', 'В', 'Г', 'Д', 'Е', 'Ж', 'З',
-			'И', 'К', 'Л', 'М', 'Н', 'О', 'П', 'Р', 'С', 'Т', 'У', 'Ф', 'Х', 'Ц', 'Ч', 'Ш', 'Щ',
-			'Ъ', 'Ы', 'Ь', 'Э', 'Я', 'а', 'б', 'в', 'г', 'д', 'е', 'ж', 'з',
-			'и', 'к', 'л', 'м', 'н', 'о', 'п', 'р', 'с', 'т', 'у', 'ф', 'х', 'ц', 'ч', 'ш', 'щ',
+	char[] alphabet = {'А', 'Б', 'В', 'Г', 'Д', 'Е', 'Ё', 'Ж', 'З',
+			'И', 'Й', 'К', 'Л', 'М', 'Н', 'О', 'П', 'Р', 'С', 'Т', 'У', 'Ф', 'Х', 'Ц', 'Ч', 'Ш', 'Щ',
+			'Ъ', 'Ы', 'Ь', 'Э', 'Я', 'а', 'б', 'в', 'г', 'д', 'е', 'ё', 'ж', 'з',
+			'и', 'й', 'к', 'л', 'м', 'н', 'о', 'п', 'р', 'с', 'т', 'у', 'ф', 'х', 'ц', 'ч', 'ш', 'щ',
 			'ъ', 'ы', 'ь', 'э', 'я', '.', ',', '«', '»', '"', '\'', ':', '!', '?', ' ', '0', '1',
 			'2', '3', '4', '5', '6', '7', '8', '9'};
 
-	Cipher cipher = new Cipher(alphabet);
+	String[] templatePhrases = {" и " , " в " , " к " , ",а" , ", а" , ", " , " , " , " или " , ". " , " . " , " это "};
+
+	Cipher cipher = new Cipher(alphabet , templatePhrases);
 	FileManager fileManager = new FileManager();
 	Scanner scanner = new Scanner(System.in);
 
@@ -32,46 +34,57 @@ public class CaesarCipher {
 
 	}
 
-	public  void encrypt() {
-//		System.out.println("Ведите адрес фаила источника");
-//		String sourceAddress = scanner.nextLine();
-//
-//		System.out.println("Ведите адрес фаила назначения");
-//		String destAddress = scanner.nextLine();
-//
-//		System.out.println("Ведите ключ шифрования");
-//		int key = scanner.nextInt();
+	public void brutForce(){
+		String sourceDecryptAddress = "E:\\java\\CaesarCipher\\CaesarCipher\\src\\main\\java\\sourceText\\тест кодированный.txt";
+		String destDecryptAddress = "E:\\java\\CaesarCipher\\CaesarCipher\\src\\main\\java\\resultText\\тест декодированный тест взлома.txt";
 
-		String sourceEncryptAddress = "E:\\java\\CaesarCipher\\CaesarCipher\\src\\main\\java\\sourceText\\test.txt";
-		String destEncryptAddress = "E:\\java\\CaesarCipher\\CaesarCipher\\src\\main\\java\\resultText\\testEncript.txt";
-		int key = 8 ;
+		boolean resultCheck = fileManager.checkExisting(sourceDecryptAddress);
 
+		if (resultCheck) {
+			FileChannel fileSourceChannel = fileManager.readFileChannel(sourceDecryptAddress);
+			FileChannel fileDestChannel = fileManager.writeFileChannel(destDecryptAddress);
+			int key = cipher.findKeyToDecode(fileSourceChannel);
+
+			try{
+				fileSourceChannel.position(0);
+			}catch (Exception e){
+				throw new RuntimeException(e);
+			}
+			if (key != -1) {
+				cipher.decrypt(fileSourceChannel, key, fileDestChannel);
+			}else{
+				System.out.println("Взлом не удался");
+			}
+		}
+	}
+
+	public void encrypt() {
+		String sourceEncryptAddress = "E:\\java\\CaesarCipher\\CaesarCipher\\src\\main\\java\\sourceText\\тест исходный.txt";
+		String destEncryptAddress = "E:\\java\\CaesarCipher\\CaesarCipher\\src\\main\\java\\resultText\\тест кодированный.txt";
+		int key = 1;
 
 
 		boolean resultCheck = fileManager.checkExisting(sourceEncryptAddress);
 		if ( resultCheck ) {
-			FileChannel fileSourseChannel = fileManager.readFileChannel(sourceEncryptAddress);
+			FileChannel fileSourceChannel = fileManager.readFileChannel(sourceEncryptAddress);
 			FileChannel fileDestChannel = fileManager.writeFileChannel(destEncryptAddress);
 
-			cipher.encrypt(fileSourseChannel, key, fileDestChannel);
+			cipher.encrypt(fileSourceChannel, key, fileDestChannel);
 		}
 	}
 
 
-	public  void decrypt() {
-		String sourceDecryptAddress = "E:\\java\\CaesarCipher\\CaesarCipher\\src\\main\\java\\sourceText\\testDecode.txt";
-		String destDecryptAddress = "E:\\java\\CaesarCipher\\CaesarCipher\\src\\main\\java\\resultText\\testDecode.txt";
-		int key = 8 ;
+	public void decrypt() {
+		String sourceDecryptAddress = "E:\\java\\CaesarCipher\\CaesarCipher\\src\\main\\java\\sourceText\\тест кодированный.txt";
+		String destDecryptAddress = "E:\\java\\CaesarCipher\\CaesarCipher\\src\\main\\java\\resultText\\тест декодированный.txt";
+		int key = 12;
 
 		boolean resultCheck = fileManager.checkExisting(sourceDecryptAddress);
 		if ( resultCheck ) {
 			FileChannel fileSourseChannel = fileManager.readFileChannel(sourceDecryptAddress);
 			FileChannel fileDestChannel = fileManager.writeFileChannel(destDecryptAddress);
-
-//			cipher.encrypt(fileSourseChannel, -key, fileDestChannel);
-			cipher.decript (fileSourseChannel ,  key , fileDestChannel);
+			cipher.decrypt(fileSourseChannel, key, fileDestChannel);
 		}
-
 
 
 	}

@@ -11,9 +11,8 @@ public class Main {
 		CaesarCipher caesarCipher = new CaesarCipher();
 //		caesarCipher.uiGreeting();/
 //		caesarCipher.encrypt();
-		caesarCipher.decrypt();
-
+//		caesarCipher.decrypt();
+		caesarCipher.brutForce();
 	}
-
 
 }
