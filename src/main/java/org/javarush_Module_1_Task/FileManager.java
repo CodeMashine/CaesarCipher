@@ -1,10 +1,6 @@
 package org.javarush_Module_1_Task;
 
 import java.io.RandomAccessFile;
-import java.nio.Buffer;
-import java.nio.ByteBuffer;
-import java.nio.CharBuffer;
-import java.nio.channels.Channel;
 import java.nio.channels.FileChannel;
 import java.nio.file.Files;
 import java.nio.file.Path;

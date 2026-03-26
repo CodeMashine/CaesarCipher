@@ -12,8 +12,6 @@ public class Cipher {
 
 	private final String[] templatePhrases;
 
-//	private final int WRONG_NUM = -1 ;
-
 	public Cipher(char[] alphabet, String[] templatePhrases) {
 		this.alphabet = alphabet;
 		this.templatePhrases = templatePhrases;
@@ -31,10 +29,10 @@ public class Cipher {
 			CharBuffer inputCharBuffer = decoder.decode(byteInputBuffer);
 
 			for ( int i = 1; i < alphabet.length; i++ ) {
-				String pretendent = getDecodeText(inputCharBuffer, -i);
+				String decodedText = getDecodeText(inputCharBuffer, -i);
 				inputCharBuffer.position(0);
 				for ( String phrase : templatePhrases ) {
-					int index = pretendent.indexOf(phrase);
+					int index = decodedText.indexOf(phrase);
 					if ( index != -1 ) {
 						return i;
 					}
@@ -122,15 +120,8 @@ public class Cipher {
 			return 68;
 		}
 
-
-//		int outputIndex = inletIndex + key;
-//
-//		if ( outputIndex > alphabet.length - 1 ) {
-//			outputIndex = outputIndex - alphabet.length - 1;
-//		}
-
 		int outputIndex = Math.floorMod(inletIndex + key, alphabet.length);
-		;
+
 		return outputIndex;
 	}
 

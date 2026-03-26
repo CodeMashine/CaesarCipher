@@ -11,7 +11,7 @@ public class CaesarCipher {
 			'ъ', 'ы', 'ь', 'э', 'я', '.', ',', '«', '»', '"', '\'', ':', '!', '?', ' ', '0', '1',
 			'2', '3', '4', '5', '6', '7', '8', '9'};
 
-	String[] templatePhrases = {" и " , " в " , " к " , ",а" , ", а" , ", " , " , " , " или " , ". " , " . " , " это "};
+	String[] templatePhrases = {" и " , " в " , " к " , ",а" , ", а" , " или " , " это "};
 
 	Cipher cipher = new Cipher(alphabet , templatePhrases);
 	FileManager fileManager = new FileManager();
@@ -61,7 +61,7 @@ public class CaesarCipher {
 	public void encrypt() {
 		String sourceEncryptAddress = "E:\\java\\CaesarCipher\\CaesarCipher\\src\\main\\java\\sourceText\\тест исходный.txt";
 		String destEncryptAddress = "E:\\java\\CaesarCipher\\CaesarCipher\\src\\main\\java\\resultText\\тест кодированный.txt";
-		int key = 1;
+		int key = 68;
 
 
 		boolean resultCheck = fileManager.checkExisting(sourceEncryptAddress);
@@ -77,7 +77,7 @@ public class CaesarCipher {
 	public void decrypt() {
 		String sourceDecryptAddress = "E:\\java\\CaesarCipher\\CaesarCipher\\src\\main\\java\\sourceText\\тест кодированный.txt";
 		String destDecryptAddress = "E:\\java\\CaesarCipher\\CaesarCipher\\src\\main\\java\\resultText\\тест декодированный.txt";
-		int key = 12;
+		int key = 68;
 
 		boolean resultCheck = fileManager.checkExisting(sourceDecryptAddress);
 		if ( resultCheck ) {
