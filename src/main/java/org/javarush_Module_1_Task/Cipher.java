@@ -103,8 +103,8 @@ public class Cipher {
 
 	private int getOutputIndex(char letter, int key) {
 		int inletIndex = 0;
-
 		boolean isFound = false;
+		boolean isUpper = Character.isUpperCase(letter);
 
 		for ( int i = 0; i < alphabet.length; i++ ) {
 			char current = alphabet[ i ];
