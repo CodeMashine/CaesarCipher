@@ -33,14 +33,21 @@ public class Gui {
 	private GridPane encryptPane;
 	private GridPane decryptPane;
 	private GridPane brutForcePane;
-	private ArrayList<Pane> panes = new ArrayList<>();
+//	private ArrayList<Pane> panes = new ArrayList<>();
+
+	private HashMap<PANES, Pane> panes = new HashMap<>();
+
 
 	public Gui() {
 		mainPane = createMainPane();
 		encryptPane = createEncryptPane();
 		decryptPane = createDecryptPane();
 		brutForcePane = createBrutForcePane();
-		panes.addAll(Arrays.asList(mainPane, encryptPane, decryptPane, brutForcePane));
+//		panes.addAll(Arrays.asList(mainPane, encryptPane, decryptPane, brutForcePane));
+		panes.put(PANES.ENCRYPT, encryptPane);
+		panes.put(PANES.DECRYPT, decryptPane);
+		panes.put(PANES.BRUT_FORCE, brutForcePane);
+		panes.put(PANES.MAIN, mainPane);
 	}
 
 
@@ -59,11 +66,11 @@ public class Gui {
 	public BorderPane createMainPane() {
 		Label h1 = new Label("Шифр Цезаря");
 
-		Button encryptButton = createNavigateButton("Encrypt", 1);
+		Button encryptButton = createNavigateButton("Encrypt", PANES.ENCRYPT);
 
-		Button decryptButton = createNavigateButton("Decrypt", 2);
+		Button decryptButton = createNavigateButton("Decrypt", PANES.DECRYPT);
 
-		Button brutForceButton = createNavigateButton("BrutForce", 3);
+		Button brutForceButton = createNavigateButton("BrutForce", PANES.BRUT_FORCE);
 
 		HBox buttonBox = new HBox(20);
 		buttonBox.setAlignment(Pos.CENTER);
@@ -156,17 +163,17 @@ public class Gui {
 		pane.add(workButton, 1, 4);
 
 
-		Button returnButton = createNavigateButton("Домой", 0);
+		Button returnButton = createNavigateButton("Домой", PANES.MAIN);
 		pane.add(returnButton, 3, 4);
 
 		return pane;
 	}
 
-	private Button createNavigateButton(String name, int paneIndex) {
+	private Button createNavigateButton(String name, PANES paneName) {
 		EventHandler<ActionEvent> handler = new EventHandler<>() {
 			@Override
 			public void handle(ActionEvent actionEvent) {
-				showPane(paneIndex);
+				showPane(paneName);
 			}
 		};
 
@@ -180,16 +187,21 @@ public class Gui {
 		return button;
 	}
 
-	private void showPane(int paneIndex) {
-		for ( int i = 0; i < panes.size(); i++ ) {
-			Pane pane = panes.get(i);
-			if ( i == paneIndex ) {
-				pane.setVisible(true);
+	private void showPane(PANES paneName) {
+		for ( PANES pane : panes.keySet() ) {
+			if ( pane == paneName ) {
+				panes.get(pane).setVisible(true);
 			} else {
-				pane.setVisible(false);
+				panes.get(pane).setVisible(false);
 			}
 		}
 	}
+}
 
 
+enum PANES {
+	MAIN,
+	ENCRYPT,
+	DECRYPT,
+	BRUT_FORCE,
 }
