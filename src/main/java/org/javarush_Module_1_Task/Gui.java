@@ -3,6 +3,7 @@ package org.javarush_Module_1_Task;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -10,23 +11,43 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.ColumnConstraints;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
+
 public class Gui {
 
-	public Scene createScene() {
-		BorderPane mainPane = createMainPane();
-		VBox encryptPane = createEncryptPane();
-		VBox decryptPane = createDecryptPane();
-		VBox brutForcePane = createBrutForcePane();
+	private BorderPane mainPane;
+	private GridPane encryptPane;
+	private GridPane decryptPane;
+	private GridPane brutForcePane;
+	private ArrayList<Pane> panes = new ArrayList<>();
 
-		mainPane.setVisible(false);
+	public Gui() {
+		mainPane = createMainPane();
+		encryptPane = createEncryptPane();
+		decryptPane = createDecryptPane();
+		brutForcePane = createBrutForcePane();
+		panes.addAll(Arrays.asList(mainPane, encryptPane, decryptPane, brutForcePane));
+	}
+
+
+	public Scene createScene() {
 		encryptPane.setVisible(false);
 		decryptPane.setVisible(false);
+		brutForcePane.setVisible(false);
 
 		StackPane main = new StackPane();
 		main.getChildren().addAll(mainPane, encryptPane, decryptPane, brutForcePane);
@@ -36,15 +57,13 @@ public class Gui {
 	}
 
 	public BorderPane createMainPane() {
-//		StackPane pane = new StackPane();
-
 		Label h1 = new Label("Шифр Цезаря");
 
-		Button encryptButton = createNavigateToEncryptButton();
+		Button encryptButton = createNavigateButton("Encrypt", 1);
 
-		Button decryptButton = createNavigateToDecryptButton();
+		Button decryptButton = createNavigateButton("Decrypt", 2);
 
-		Button brutForceButton = createNavigateToBrutforceButton();
+		Button brutForceButton = createNavigateButton("BrutForce", 3);
 
 		HBox buttonBox = new HBox(20);
 		buttonBox.setAlignment(Pos.CENTER);
@@ -54,14 +73,10 @@ public class Gui {
 		BorderPane borderPane = new BorderPane();
 		borderPane.setCenter(h1);
 		borderPane.setBottom(buttonBox);
-
-
-//		pane.getChildren().addAll(borderPane);
-
 		return borderPane;
 	}
 
-	private VBox createEncryptPane() {
+	private GridPane createEncryptPane() {
 		EventHandler<ActionEvent> handler = new EventHandler<>() {
 			@Override
 			public void handle(ActionEvent actionEvent) {
@@ -69,11 +84,11 @@ public class Gui {
 			}
 		};
 
-		VBox encryptPane = createEncryptDecryptPane("Encrypt", "Encrypt", handler, true);
+		GridPane encryptPane = createCustomPane("Encrypt", "Encrypt", handler, true);
 		return encryptPane;
 	}
 
-	private VBox createDecryptPane() {
+	private GridPane createDecryptPane() {
 		EventHandler<ActionEvent> handler = new EventHandler<>() {
 			@Override
 			public void handle(ActionEvent actionEvent) {
@@ -81,11 +96,11 @@ public class Gui {
 			}
 		};
 
-		VBox encryptPane = createEncryptDecryptPane("Decrypt", "Decrypt", handler, true);
+		GridPane encryptPane = createCustomPane("Decrypt", "Decrypt", handler, true);
 		return encryptPane;
 	}
 
-	private VBox createBrutForcePane() {
+	private GridPane createBrutForcePane() {
 		EventHandler<ActionEvent> handler = new EventHandler<>() {
 			@Override
 			public void handle(ActionEvent actionEvent) {
@@ -93,110 +108,88 @@ public class Gui {
 			}
 		};
 
-		VBox encryptPane = createEncryptDecryptPane("Brut Force", "Brut Force", handler, false);
+		GridPane encryptPane = createCustomPane("Brut Force", "Brut Force", handler, false);
 		return encryptPane;
 	}
 
-	private VBox createEncryptDecryptPane(String title, String buttonName, EventHandler<ActionEvent> eventHandler, boolean isEncryptDecrypt) {
-		VBox pane = new VBox(15);
+	private GridPane createCustomPane(String title, String buttonName, EventHandler<ActionEvent> eventHandler, boolean isEncryptDecrypt) {
+		GridPane pane = new GridPane();
+		pane.setHgap(10);
+		pane.setVgap(10);
+		pane.setPadding(new Insets(25, 25, 25, 25));
 
 		pane.setStyle("-fx-padding: 20; -fx-background-color: #f0f8ff;");
 
-		Label titleScene = new Label(title);
-		titleScene.setStyle("-fx-font-size: 18; -fx-font-weight: bold;");
-
-
-		HBox fieldBox1 = new HBox(15);
-		Label sourseLabel = new Label("Source");
-		TextField sourceField = new TextField();
-		fieldBox1.getChildren().addAll(sourseLabel, sourceField);
-
-
-		HBox fieldBox2 = new HBox(15);
-		Label targetLabel = new Label("Destination");
-		TextField targetField = new TextField();
-		fieldBox2.getChildren().addAll(targetLabel, targetField);
-
-		HBox fieldBox3 = new HBox(15);
-		if ( isEncryptDecrypt ) {
-			Label keyLabel = new Label("Key");
-			TextField keyField = new TextField();
-			fieldBox3.getChildren().addAll(keyLabel, keyField);
+		for ( int i = 0; i < 5; i++ ) {
+			ColumnConstraints col = new ColumnConstraints();
+			RowConstraints row = new RowConstraints();
+			col.setPercentWidth(20);
+			row.setPercentHeight(20);
+			pane.getColumnConstraints().add(col);
+			pane.getRowConstraints().add(row);
 		}
 
-		HBox fieldBox4 = new HBox(15);
+		Label titleScene = new Label(title);
+		titleScene.setStyle("-fx-font-size: 18; -fx-font-weight: bold;");
+		titleScene.setAlignment(Pos.CENTER);
+		pane.add(titleScene, 2, 0);
+
+		Label sourseLabel = new Label("Source");
+		pane.add(sourseLabel, 1, 1);
+		TextField sourceField = new TextField();
+		pane.add(sourceField, 2, 1);
+
+		Label targetLabel = new Label("Destination");
+		pane.add(targetLabel, 1, 2);
+		TextField targetField = new TextField();
+		pane.add(targetField, 2, 2);
+
+		if ( isEncryptDecrypt ) {
+			Label keyLabel = new Label("Key");
+			pane.add(keyLabel, 1, 3);
+			TextField keyField = new TextField();
+			pane.add(keyField, 2, 3);
+		}
+
 		Button workButton = new Button(buttonName);
 		workButton.setOnAction(eventHandler);
-
-		Button returnButton = new Button("Домой");
-		returnButton.setOnAction(e -> {
-			System.out.println("return");
-		});
-		fieldBox4.getChildren().addAll(workButton, returnButton);
+		pane.add(workButton, 1, 4);
 
 
-//		pane.getChildren().addAll(titleScene, sourseLabel, sourceField, targetLabel, targetField, keyLabel, keyField, workButton, returnButton);
-		pane.getChildren().addAll(fieldBox1, fieldBox2, fieldBox3, fieldBox4);
+		Button returnButton = createNavigateButton("Домой", 0);
+		pane.add(returnButton, 3, 4);
 
 		return pane;
 	}
 
-//	public VBox createBrutForcePane() {
-//		return null;
-//	}
-
-	;
-
-
-	public Button createNavigateToEncryptButton() {
-		String name = "Encrypt";
-
+	private Button createNavigateButton(String name, int paneIndex) {
 		EventHandler<ActionEvent> handler = new EventHandler<>() {
 			@Override
 			public void handle(ActionEvent actionEvent) {
-				System.out.println("navigate to encrypt");
+				showPane(paneIndex);
 			}
 		};
 
-		Button button = createButton(name, handler);
-
-		return button;
-	}
-
-	public Button createNavigateToDecryptButton() {
-		String name = "Decrypt";
-
-		EventHandler<ActionEvent> handler = new EventHandler<>() {
-			@Override
-			public void handle(ActionEvent actionEvent) {
-				System.out.println("navigate to decrypt");
-			}
-		};
-
-		Button button = createButton(name, handler);
-
-		return button;
-	}
-
-	public Button createNavigateToBrutforceButton() {
-		String name = "BrutForce";
-
-		EventHandler<ActionEvent> handler = new EventHandler<>() {
-			@Override
-			public void handle(ActionEvent actionEvent) {
-				System.out.println("navigate to BrutForce");
-			}
-		};
-
-		Button button = createButton(name, handler);
-
-		return button;
+		return createButton(name, handler);
 	}
 
 
-	public Button createButton(String name, EventHandler<ActionEvent> handler) {
+	private Button createButton(String name, EventHandler<ActionEvent> handler) {
 		Button button = new Button(name);
 		button.setOnAction(handler);
 		return button;
 	}
+
+	private void showPane(int paneIndex) {
+		for ( int i = 0; i < panes.size(); i++ ) {
+			Pane pane = panes.get(i);
+			if ( i == paneIndex ) {
+				pane.setVisible(true);
+			} else {
+				pane.setVisible(false);
+			}
+		}
+	}
+
+
 }
