@@ -95,9 +95,15 @@ public class Cipher {
 				bytesRead = sourceChannel.read(byteInputBuffer);
 			}
 
-
 		} catch ( Exception e ) {
 			throw new RuntimeException(e);
+		}finally {
+			try {
+				sourceChannel.close();
+				destChannel.close();
+			}catch( Exception e ) {
+				throw new RuntimeException(e);
+			}
 		}
 	}
 

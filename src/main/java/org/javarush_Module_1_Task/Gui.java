@@ -1,11 +1,9 @@
 package org.javarush_Module_1_Task;
 
-import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -17,33 +15,26 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
-
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
 
 public class Gui {
-
+	private CipherController cipherController;
+	private Validator validator;
 	private BorderPane mainPane;
 	private GridPane encryptPane;
 	private GridPane decryptPane;
 	private GridPane brutForcePane;
-//	private ArrayList<Pane> panes = new ArrayList<>();
 
 	private HashMap<PANES, Pane> panes = new HashMap<>();
 
-
-	public Gui() {
+	public Gui(CipherController cipherController, Validator validator) {
+		this.cipherController = cipherController;
+		this.validator = validator;
 		mainPane = createMainPane();
 		encryptPane = createEncryptPane();
 		decryptPane = createDecryptPane();
 		brutForcePane = createBrutForcePane();
-//		panes.addAll(Arrays.asList(mainPane, encryptPane, decryptPane, brutForcePane));
+
 		panes.put(PANES.ENCRYPT, encryptPane);
 		panes.put(PANES.DECRYPT, decryptPane);
 		panes.put(PANES.BRUT_FORCE, brutForcePane);
@@ -52,6 +43,7 @@ public class Gui {
 
 
 	public Scene createScene() {
+		mainPane.setVisible(true);
 		encryptPane.setVisible(false);
 		decryptPane.setVisible(false);
 		brutForcePane.setVisible(false);
@@ -64,7 +56,7 @@ public class Gui {
 	}
 
 	public BorderPane createMainPane() {
-		Label h1 = new Label("Шифр Цезаря");
+		Label h1 = new Label("Caesar Cipher");
 
 		Button encryptButton = createNavigateButton("Encrypt", PANES.ENCRYPT);
 
@@ -84,42 +76,21 @@ public class Gui {
 	}
 
 	private GridPane createEncryptPane() {
-		EventHandler<ActionEvent> handler = new EventHandler<>() {
-			@Override
-			public void handle(ActionEvent actionEvent) {
-				System.out.println("encrypt");
-			}
-		};
-
-		GridPane encryptPane = createCustomPane("Encrypt", "Encrypt", handler, true);
+		GridPane encryptPane = createCustomPane("Encrypt", "Encrypt", PANES.ENCRYPT );
 		return encryptPane;
 	}
 
 	private GridPane createDecryptPane() {
-		EventHandler<ActionEvent> handler = new EventHandler<>() {
-			@Override
-			public void handle(ActionEvent actionEvent) {
-				System.out.println("decrypt");
-			}
-		};
-
-		GridPane encryptPane = createCustomPane("Decrypt", "Decrypt", handler, true);
+		GridPane encryptPane = createCustomPane("Decrypt", "Decrypt", PANES.DECRYPT);
 		return encryptPane;
 	}
 
 	private GridPane createBrutForcePane() {
-		EventHandler<ActionEvent> handler = new EventHandler<>() {
-			@Override
-			public void handle(ActionEvent actionEvent) {
-				System.out.println("brut force");
-			}
-		};
-
-		GridPane encryptPane = createCustomPane("Brut Force", "Brut Force", handler, false);
+		GridPane encryptPane = createCustomPane("Brut Force", "Brut Force", PANES.BRUT_FORCE );
 		return encryptPane;
 	}
 
-	private GridPane createCustomPane(String title, String buttonName, EventHandler<ActionEvent> eventHandler, boolean isEncryptDecrypt) {
+	private GridPane createCustomPane(String title, String buttonName, PANES paneType) {
 		GridPane pane = new GridPane();
 		pane.setHgap(10);
 		pane.setVgap(10);
@@ -145,25 +116,82 @@ public class Gui {
 		pane.add(sourseLabel, 1, 1);
 		TextField sourceField = new TextField();
 		pane.add(sourceField, 2, 1);
+		Label errorSourceLabel = new Label("");
+		pane.add(errorSourceLabel, 3, 1);
+
+		sourceField.setOnMouseClicked(event -> {
+			errorSourceLabel.setText("");
+		});
 
 		Label targetLabel = new Label("Destination");
 		pane.add(targetLabel, 1, 2);
 		TextField targetField = new TextField();
 		pane.add(targetField, 2, 2);
+		Label errorTargetLabel = new Label("");
+		pane.add(errorTargetLabel, 3, 2);
 
-		if ( isEncryptDecrypt ) {
-			Label keyLabel = new Label("Key");
-			pane.add(keyLabel, 1, 3);
-			TextField keyField = new TextField();
-			pane.add(keyField, 2, 3);
+		targetField.setOnMouseClicked(event -> {
+			errorTargetLabel.setText("");
+		});
+
+		Label keyLabel = new Label("Key");
+		pane.add(keyLabel, 1, 3);
+		TextField keyField = new TextField();
+		pane.add(keyField, 2, 3);
+		Label errorKeyLabel = new Label("");
+		pane.add(errorKeyLabel, 3, 3);
+
+		keyField.setOnMouseClicked(event -> {
+			errorKeyLabel.setText("");
+		});
+
+
+		if ( paneType == PANES.BRUT_FORCE ) {
+			keyLabel.setVisible(false);
+			keyField.setVisible(false);
 		}
 
 		Button workButton = new Button(buttonName);
-		workButton.setOnAction(eventHandler);
+		workButton.setOnAction(e -> {
+			String source = sourceField.getText();
+			String destination = targetField.getText();
+			String key = keyField.getText();
+
+			boolean isSourceExist = validator.checkExistingFile(source);
+			boolean isValidDestPath = validator.validateDestinationPath(destination);
+
+			if ( !isSourceExist ) {
+				errorSourceLabel.setText("Source is nit exist");
+				return;
+			}
+
+			if ( !isValidDestPath ) {
+				errorTargetLabel.setText("Invalid destination path");
+				return;
+			}
+			if ( paneType != PANES.DECRYPT ) {
+				key = keyField.getText();
+				boolean isValidKey = validator.checkKey(key);
+				if ( !isValidKey ) {
+					errorKeyLabel.setText("Invalid key");
+					return;
+				}
+			}
+
+			if ( paneType == PANES.ENCRYPT ) {
+				int keyValue = Integer.parseInt(key);
+				cipherController.encrypt(source, destination, keyValue);
+			} else if ( paneType == PANES.DECRYPT ) {
+				int keyValue = Integer.parseInt(key);
+				cipherController.decrypt(source, destination, keyValue);
+			} else {
+				cipherController.brutForce(source, destination);
+			}
+		});
+
 		pane.add(workButton, 1, 4);
 
-
-		Button returnButton = createNavigateButton("Домой", PANES.MAIN);
+		Button returnButton = createNavigateButton("Home", PANES.MAIN);
 		pane.add(returnButton, 3, 4);
 
 		return pane;
