@@ -19,7 +19,6 @@ import java.util.HashMap;
 
 public class Gui {
 	private CipherController cipherController;
-	private Validator validator;
 	private BorderPane mainPane;
 	private GridPane encryptPane;
 	private GridPane decryptPane;
@@ -27,9 +26,8 @@ public class Gui {
 
 	private HashMap<PANES, Pane> panes = new HashMap<>();
 
-	public Gui(CipherController cipherController, Validator validator) {
+	public Gui(CipherController cipherController) {
 		this.cipherController = cipherController;
-		this.validator = validator;
 		mainPane = createMainPane();
 		encryptPane = createEncryptPane();
 		decryptPane = createDecryptPane();
@@ -157,8 +155,8 @@ public class Gui {
 			String destination = targetField.getText();
 			String key = keyField.getText();
 
-			boolean isSourceExist = validator.checkExistingFile(source);
-			boolean isValidDestPath = validator.validateDestinationPath(destination);
+			boolean isSourceExist = cipherController.validator.checkExistingFile(source);
+			boolean isValidDestPath = cipherController.validator.validateDestinationPath(destination);
 
 			if ( !isSourceExist ) {
 				errorSourceLabel.setText("Source is nit exist");
@@ -171,7 +169,7 @@ public class Gui {
 			}
 			if ( paneType != PANES.DECRYPT ) {
 				key = keyField.getText();
-				boolean isValidKey = validator.checkKey(key);
+				boolean isValidKey = cipherController.validator.checkKey(key);
 				if ( !isValidKey ) {
 					errorKeyLabel.setText("Invalid key");
 					return;

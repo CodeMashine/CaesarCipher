@@ -1,13 +1,12 @@
-package org.javarush_Module_1_Task;
+package org.javarush_Module_1_Task.worker;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 public class Validator {
-	private int possibleKeyValue;
+	private final int possibleKeyValue;
 
-	Validator(int possibleKeyValue) {
+	public Validator(int possibleKeyValue) {
 		this.possibleKeyValue = possibleKeyValue - 1;
 	}
 

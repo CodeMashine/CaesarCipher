@@ -1,4 +1,4 @@
-package org.javarush_Module_1_Task;
+package org.javarush_Module_1_Task.worker;
 
 import java.io.RandomAccessFile;
 import java.nio.channels.FileChannel;

@@ -1,20 +1,24 @@
-package org.javarush_Module_1_Task;
+package org.javarush_Module_1_Task.worker;
 
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.channels.FileChannel;
+import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
 import java.nio.charset.CharsetEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 
 public class Cipher {
 	private final char[] alphabet;
+	private final Alphabet alphabetInstance;
 
 	private final String[] templatePhrases;
 
-	public Cipher(char[] alphabet, String[] templatePhrases) {
+	public Cipher(char[] alphabet, String[] templatePhrases , Alphabet alphabetInstance) {
 		this.alphabet = alphabet;
 		this.templatePhrases = templatePhrases;
+		this.alphabetInstance = alphabetInstance;
 	}
 
 
@@ -64,13 +68,16 @@ public class Cipher {
 
 	public void encrypt(FileChannel sourceChannel, int key, FileChannel destChannel) {
 
-		ByteBuffer byteInputBuffer = ByteBuffer.allocate(1024);
+		ByteBuffer byteInputBuffer = ByteBuffer.allocate(8192);
 
 		ByteBuffer byteOutputBuffer;
 
 		try {
-			CharsetDecoder decoder = StandardCharsets.UTF_8.newDecoder();
-			CharsetEncoder encoder = StandardCharsets.UTF_8.newEncoder();
+//			CharsetDecoder decoder = StandardCharsets.UTF_8.newDecoder();
+			Charset charset = StandardCharsets.UTF_8;
+			CharsetDecoder decoder = charset.newDecoder();
+//			CharsetEncoder encoder = StandardCharsets.UTF_8.newEncoder();
+			CharsetEncoder encoder = charset.newEncoder();
 
 			int bytesRead = sourceChannel.read(byteInputBuffer);
 
@@ -78,8 +85,10 @@ public class Cipher {
 				byteInputBuffer.flip();
 
 				CharBuffer inputCharBuffer = decoder.decode(byteInputBuffer);
+//				ByteBuffer inputCharBuffer = byteInputBuffer ;
 
-				CharBuffer outputCharBuffer = CharBuffer.allocate(inputCharBuffer.length());
+//				CharBuffer outputCharBuffer = CharBuffer.allocate(inputCharBuffer.length());
+				CharBuffer outputCharBuffer = CharBuffer.allocate(inputCharBuffer.limit());
 
 				while ( inputCharBuffer.hasRemaining() ) {
 					char inputChar = inputCharBuffer.get();
@@ -91,6 +100,10 @@ public class Cipher {
 				byteInputBuffer.clear();
 				byteOutputBuffer = encoder.encode(outputCharBuffer);
 				destChannel.write(byteOutputBuffer);
+
+//				destChannel.write(outputCharBuffer);
+
+
 				byteOutputBuffer.clear();
 				bytesRead = sourceChannel.read(byteInputBuffer);
 			}
@@ -108,31 +121,18 @@ public class Cipher {
 	}
 
 	private int getOutputIndex(char letter, int key) {
-		int inletIndex = 0;
-		boolean isFound = false;
-		boolean isUpper = Character.isUpperCase(letter);
 
-		for ( int i = 0; i < alphabet.length; i++ ) {
-			char current = alphabet[ i ];
-
-			if ( current == letter ) {
-				inletIndex = i;
-				isFound = true;
-				break;
-			}
+		if(alphabetInstance.mapAlphabet.containsKey(letter)) {
+			int index =  alphabetInstance.getIndexfromChar(letter);
+			return Math.floorMod(index + key, alphabetInstance.getLength());
 		}
 
-		if ( !isFound ) {
-			return 68;
-		}
+		return
 
-		int outputIndex = Math.floorMod(inletIndex + key, alphabet.length);
-
-		return outputIndex;
 	}
 
 	private char getOutputChar(int outputCharIndex) {
-		char letter = alphabet[ outputCharIndex ];
+		char letter = alphabetInstance.getCharFromIndex(outputCharIndex);
 		return letter;
 	}
 

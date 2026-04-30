@@ -1,5 +1,9 @@
 package org.javarush_Module_1_Task;
 
+import org.javarush_Module_1_Task.worker.Cipher;
+import org.javarush_Module_1_Task.worker.FileManager;
+import org.javarush_Module_1_Task.worker.Validator;
+
 import java.nio.channels.FileChannel;
 
 public class CipherController {
@@ -13,7 +17,6 @@ public class CipherController {
 		this.fileManager = fileManager;
 		this.validator = validator;
 	}
-
 
 	public void brutForce(String sourceDecryptAddress, String destDecryptAddress) {
 //		E:\java\CaesarCipher\CaesarCipher\src\main\java\sourceText\тест кодированный.txt
@@ -37,12 +40,11 @@ public class CipherController {
 
 	public void encrypt(String sourceEncryptAddress, String destEncryptAddress, int key) {
 //		E:\java\CaesarCipher\CaesarCipher\src\main\java\sourceText\тест исходный.txt
-//		E:\java\CaesarCipher\CaesarCipher\src\main\java\resultText\тест декодированный.txt
+//		E:\java\CaesarCipher\CaesarCipher\src\main\java\resultText\тест кодированный.txt
 		FileChannel fileSourceChannel = fileManager.createReadFileChannel(sourceEncryptAddress);
 		FileChannel fileDestChannel = fileManager.createWriteFileChannel(destEncryptAddress);
 		cipher.encrypt(fileSourceChannel, key, fileDestChannel);
 	}
-
 
 	public void decrypt(String sourceDecryptAddress, String destDecryptAddress, int key) {
 //		E:\java\CaesarCipher\CaesarCipher\src\main\java\sourceText\тест кодированный.txt
