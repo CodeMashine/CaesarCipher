@@ -15,6 +15,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.StackPane;
+
 import java.util.HashMap;
 
 public class Gui {
@@ -74,18 +75,18 @@ public class Gui {
 	}
 
 	private GridPane createEncryptPane() {
-		GridPane encryptPane = createCustomPane("Encrypt", "Encrypt", PANES.ENCRYPT );
+		GridPane encryptPane = createCustomPane("Encrypt", "Encrypt", PANES.ENCRYPT);
 		return encryptPane;
 	}
 
 	private GridPane createDecryptPane() {
-		GridPane encryptPane = createCustomPane("Decrypt", "Decrypt", PANES.DECRYPT);
-		return encryptPane;
+		GridPane decryptPane = createCustomPane("Decrypt", "Decrypt", PANES.DECRYPT);
+		return decryptPane;
 	}
 
 	private GridPane createBrutForcePane() {
-		GridPane encryptPane = createCustomPane("Brut Force", "Brut Force", PANES.BRUT_FORCE );
-		return encryptPane;
+		GridPane brutForcePane = createCustomPane("Brut Force", "Brut Force", PANES.BRUT_FORCE);
+		return brutForcePane;
 	}
 
 	private GridPane createCustomPane(String title, String buttonName, PANES paneType) {
@@ -167,7 +168,7 @@ public class Gui {
 				errorTargetLabel.setText("Invalid destination path");
 				return;
 			}
-			if ( paneType != PANES.DECRYPT ) {
+			if ( paneType != PANES.BRUT_FORCE ) {
 				key = keyField.getText();
 				boolean isValidKey = cipherController.validator.checkKey(key);
 				if ( !isValidKey ) {
@@ -176,12 +177,9 @@ public class Gui {
 				}
 			}
 
-			if ( paneType == PANES.ENCRYPT ) {
+			if ( paneType != PANES.BRUT_FORCE ) {
 				int keyValue = Integer.parseInt(key);
 				cipherController.encrypt(source, destination, keyValue);
-			} else if ( paneType == PANES.DECRYPT ) {
-				int keyValue = Integer.parseInt(key);
-				cipherController.decrypt(source, destination, keyValue);
 			} else {
 				cipherController.brutForce(source, destination);
 			}

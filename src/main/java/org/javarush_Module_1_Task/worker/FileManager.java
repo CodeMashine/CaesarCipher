@@ -1,25 +1,25 @@
 package org.javarush_Module_1_Task.worker;
 
-import java.io.RandomAccessFile;
-import java.nio.channels.FileChannel;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 public class FileManager {
 
-	public FileChannel createReadFileChannel(String address) {
+	public BufferedReader createReader(String address) {
 		try {
-			RandomAccessFile aFile = new RandomAccessFile(address, "r");
-			FileChannel channel = aFile.getChannel();
-			return channel;
+			BufferedReader reader = Files.newBufferedReader(Path.of(address));
+			return reader;
 		} catch ( Exception e ) {
 			throw new RuntimeException(e);
 		}
 	}
 
-	public FileChannel createWriteFileChannel(String address) {
+	public BufferedWriter createWriter(String address) {
 		try {
-			RandomAccessFile aFile = new RandomAccessFile(address, "rw");
-			FileChannel channel = aFile.getChannel();
-			return channel;
+			BufferedWriter writer = Files.newBufferedWriter(Path.of(address));
+			return writer;
 		} catch ( Exception e ) {
 			throw new RuntimeException(e);
 		}

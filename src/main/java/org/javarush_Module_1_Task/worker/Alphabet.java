@@ -5,7 +5,7 @@ import java.util.Map;
 
 public class Alphabet {
 	private char[] alphabet;
-	public Map<Character, Integer> mapAlphabet = new HashMap<>();
+	private Map<Character, Integer> mapAlphabet = new HashMap<>();
 
 	public Alphabet(char[] alphabet) {
 		this.alphabet = alphabet;
@@ -24,12 +24,17 @@ public class Alphabet {
 	}
 
 
-	public char getCharFromIndex(int index) {
+	public char getChar(int index) {
 		return alphabet[ index ];
 	}
 
 
-	public Integer getIndexfromChar(char word) {
-		return mapAlphabet.get(word);
+	public Integer getIndex(char letter) {
+		return mapAlphabet.get(letter);
 	}
+
+	public boolean contains(char letter) {
+		return mapAlphabet.containsKey(letter);
+	}
+
 }
