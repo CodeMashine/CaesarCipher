@@ -177,10 +177,14 @@ public class Gui {
 				}
 			}
 
-			if ( paneType != PANES.BRUT_FORCE ) {
+			if ( paneType == PANES.ENCRYPT ) {
 				int keyValue = Integer.parseInt(key);
 				cipherController.encrypt(source, destination, keyValue);
-			} else {
+			} else if (paneType == PANES.DECRYPT){
+				int keyValue = Integer.parseInt(key);
+				cipherController.decrypt(source, destination, keyValue);
+			}
+			else{
 				cipherController.brutForce(source, destination);
 			}
 		});
