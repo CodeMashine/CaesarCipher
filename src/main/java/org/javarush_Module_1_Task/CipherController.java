@@ -6,7 +6,7 @@ import org.javarush_Module_1_Task.worker.Validator;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.nio.channels.FileChannel;
+import java.io.IOException;
 
 public class CipherController {
 
@@ -21,30 +21,30 @@ public class CipherController {
 	}
 
 	public void brutForce(String sourceDecryptAddress, String destDecryptAddress) {
-//		E:\java\CaesarCipher\CaesarCipher\src\main\java\resultText\тест кодированный.txt
-//		E:\java\CaesarCipher\CaesarCipher\src\main\java\resultText\тест взлом.txt
 		BufferedReader bufferedFileReader = fileManager.createReader(sourceDecryptAddress);
-		BufferedWriter bufferedFileWriter = fileManager.createWriter(destDecryptAddress);
 		int key = cipher.findKeyToDecode(bufferedFileReader);
 
 		if ( key != -1 ) {
-			cipher.decrypt(bufferedFileReader, key, bufferedFileWriter);
+			try {
+				bufferedFileReader.close();
+			}catch (IOException e){
+				throw new RuntimeException(e);
+			}
+			bufferedFileReader = fileManager.createReader(sourceDecryptAddress);
+			BufferedWriter bufferedFileWriter = fileManager.createWriter(destDecryptAddress);
+			cipher.encrypt(bufferedFileReader, key, bufferedFileWriter);
 		} else {
 			System.out.println("Взлом не удался");
 		}
 	}
 
 	public void encrypt(String sourceEncryptAddress, String destEncryptAddress, int key) {
-//		E:\java\CaesarCipher\CaesarCipher\src\main\java\sourceText\тест исходный.txt
-//		E:\java\CaesarCipher\CaesarCipher\src\main\java\resultText\тест кодированный.txt
 		BufferedReader fileReader = fileManager.createReader(sourceEncryptAddress);
 		BufferedWriter fileWriter = fileManager.createWriter(destEncryptAddress);
 		cipher.encrypt(fileReader, key, fileWriter);
 	}
 
 	public void decrypt(String sourceDecryptAddress, String destDecryptAddress, int key) {
-//		E:\java\CaesarCipher\CaesarCipher\src\main\java\sourceText\тест кодированный.txt
-//		E:\java\CaesarCipher\CaesarCipher\src\main\java\resultText\тест декодированный тест взлома.txt
 		BufferedReader fileReader = fileManager.createReader(sourceDecryptAddress);
 		BufferedWriter fileWriter = fileManager.createWriter(destDecryptAddress);
 		cipher.decrypt(fileReader, key, fileWriter);

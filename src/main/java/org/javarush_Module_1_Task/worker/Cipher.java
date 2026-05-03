@@ -6,15 +6,13 @@ import java.io.IOException;
 
 
 public class Cipher {
-	private final char[] alphabet;
-	private final Alphabet alphabetInstance;
+	private final Alphabet alphabet;
 
 	private final String[] templatePhrases;
 
-	public Cipher(char[] alphabet, String[] templatePhrases, Alphabet alphabetInstance) {
-		this.alphabet = alphabet;
+	public Cipher(String[] templatePhrases, Alphabet alphabetInstance) {
 		this.templatePhrases = templatePhrases;
-		this.alphabetInstance = alphabetInstance;
+		this.alphabet = alphabetInstance;
 	}
 
 
@@ -23,18 +21,22 @@ public class Cipher {
 		StringBuilder stringPretender = new StringBuilder();
 
 		try {
-			for ( int i = 0; i < 10; i++ ) {
-				stringToBrut.append(bufferedFileReader.readLine());
+			for ( int i = 0; i < 3; i++ ) {
+				String inlet ;
+				if ((inlet = bufferedFileReader.readLine()) != null) {
+					stringToBrut.append(inlet);
+				}
 			}
 
-			for ( int i = 0; i < alphabetInstance.getLength(); i++ ) {
+			for ( int keyPretender = 0; keyPretender < alphabet.getLength(); keyPretender++ ) {
+				stringPretender.setLength(0);
 
 				for ( int j = 0; j < stringToBrut.length(); j++ ) {
 					char currentChar = stringToBrut.charAt(j);
-					if ( alphabetInstance.contains(currentChar) ) {
-						int currentIndex = alphabetInstance.getIndex(currentChar);
-						int outputIndex = Math.floorMod(currentIndex + i, alphabetInstance.getLength());
-						char shiftedChar = alphabetInstance.getChar(outputIndex);
+					if ( alphabet.contains(currentChar) ) {
+						int currentIndex = alphabet.getIndex(currentChar);
+						int outputIndex = Math.floorMod(currentIndex + keyPretender, alphabet.getLength());
+						char shiftedChar = alphabet.getChar(outputIndex);
 						stringPretender.append(shiftedChar);
 					} else {
 						stringPretender.append(currentChar);
@@ -42,14 +44,10 @@ public class Cipher {
 				}
 
 				for ( int j = 0; j < templatePhrases.length; j++ ) {
-					if ( stringPretender.toString().equals(templatePhrases[ j ]) ) {
-						return j;
+					if ( stringPretender.toString().contains(templatePhrases[ j ]) ) {
+						return keyPretender;
 					}
-
-					stringPretender.setLength(0);
 				}
-
-
 			}
 
 
@@ -70,10 +68,10 @@ public class Cipher {
 			while ( (byteValue = bufferedFileReader.read()) != -1 ) {
 				char currentChar = (char) byteValue;
 
-				if ( alphabetInstance.contains(currentChar) ) {
-					int currentIndex = alphabetInstance.getIndex(currentChar);
-					int outputIndex = Math.floorMod(currentIndex + key, alphabetInstance.getLength());
-					char outputChar = alphabetInstance.getChar(outputIndex);
+				if ( alphabet.contains(currentChar) ) {
+					int currentIndex = alphabet.getIndex(currentChar);
+					int outputIndex = Math.floorMod(currentIndex + key, alphabet.getLength());
+					char outputChar = alphabet.getChar(outputIndex);
 					bufferedFileWriter.write(outputChar);
 				} else {
 					bufferedFileWriter.write(currentChar);

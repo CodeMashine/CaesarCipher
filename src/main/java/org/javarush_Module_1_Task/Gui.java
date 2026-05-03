@@ -160,7 +160,7 @@ public class Gui {
 			boolean isValidDestPath = cipherController.validator.validateDestinationPath(destination);
 
 			if ( !isSourceExist ) {
-				errorSourceLabel.setText("Source is nit exist");
+				errorSourceLabel.setText("Source is not exist");
 				return;
 			}
 
