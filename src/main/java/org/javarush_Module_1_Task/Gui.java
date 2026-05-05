@@ -97,26 +97,28 @@ public class Gui {
 
 		pane.setStyle("-fx-padding: 20; -fx-background-color: #f0f8ff;");
 
-		for ( int i = 0; i < 5; i++ ) {
+		for ( int i = 0; i < 10; i++ ) {
 			ColumnConstraints col = new ColumnConstraints();
-			RowConstraints row = new RowConstraints();
-			col.setPercentWidth(20);
-			row.setPercentHeight(20);
+			col.setPercentWidth(10);
 			pane.getColumnConstraints().add(col);
+		}
+		for ( int i = 0; i < 5; i++ ) {
+			RowConstraints row = new RowConstraints();
+			row.setPercentHeight(20);
 			pane.getRowConstraints().add(row);
 		}
 
 		Label titleScene = new Label(title);
 		titleScene.setStyle("-fx-font-size: 18; -fx-font-weight: bold;");
 		titleScene.setAlignment(Pos.CENTER);
-		pane.add(titleScene, 2, 0);
+		pane.add(titleScene, 5, 0,1,1);
 
 		Label sourseLabel = new Label("Source");
 		pane.add(sourseLabel, 1, 1);
 		TextField sourceField = new TextField();
-		pane.add(sourceField, 2, 1);
+		pane.add(sourceField, 2, 1,6,1);
 		Label errorSourceLabel = new Label("");
-		pane.add(errorSourceLabel, 3, 1);
+		pane.add(errorSourceLabel, 8, 1,2,1);
 
 		sourceField.setOnMouseClicked(event -> {
 			errorSourceLabel.setText("");
@@ -125,9 +127,9 @@ public class Gui {
 		Label targetLabel = new Label("Destination");
 		pane.add(targetLabel, 1, 2);
 		TextField targetField = new TextField();
-		pane.add(targetField, 2, 2);
+		pane.add(targetField, 2, 2,6,1);
 		Label errorTargetLabel = new Label("");
-		pane.add(errorTargetLabel, 3, 2);
+		pane.add(errorTargetLabel,8, 2,2,1);
 
 		targetField.setOnMouseClicked(event -> {
 			errorTargetLabel.setText("");
@@ -189,10 +191,10 @@ public class Gui {
 			}
 		});
 
-		pane.add(workButton, 1, 4);
+		pane.add(workButton, 1, 4 , 2 ,1) ;
 
 		Button returnButton = createNavigateButton("Home", PANES.MAIN);
-		pane.add(returnButton, 3, 4);
+		pane.add(returnButton, 5, 4 , 2 , 1);
 
 		return pane;
 	}

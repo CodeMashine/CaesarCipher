@@ -15,7 +15,6 @@ public class Cipher {
 		this.alphabet = alphabetInstance;
 	}
 
-
 	public int findKeyToDecode(BufferedReader bufferedFileReader) {
 		StringBuilder stringToBrut = new StringBuilder();
 		StringBuilder stringPretender = new StringBuilder();
@@ -27,7 +26,6 @@ public class Cipher {
 					stringToBrut.append(inlet);
 				}
 			}
-
 
 			for ( int shift = 0; shift < alphabet.getLength(); shift++ ) {
 				stringPretender.setLength(0);
@@ -51,7 +49,6 @@ public class Cipher {
 					}
 				}
 			}
-
 
 		} catch ( IOException e ) {
 			throw new RuntimeException(e);

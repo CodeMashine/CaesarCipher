@@ -11,30 +11,34 @@ public class Validator {
 	}
 
 	public boolean validateDestinationPath(String destinationPath) {
-		if (destinationPath == null || destinationPath.isEmpty()) {
+		if ( destinationPath == null || destinationPath.isEmpty() ) {
 			return false;
 		}
-		if(destinationPath.length() > 256){
-			return false;
-		}
-
-		Path path = Path.of(destinationPath);
-
-		String fileName = path.getFileName().toString();
-		Path fileRoot = path.getParent();
-
-		if (!Files.isDirectory(fileRoot) ) {
+		if ( destinationPath.length() > 256 ) {
 			return false;
 		}
 
-		boolean isValidFileName = validateFileName(fileName);
+		try {
+			Path path = Path.of(destinationPath);
 
-		if ( !isValidFileName ) {
-			return false;
-		}
+			String fileName = path.getFileName().toString();
+			Path fileRoot = path.getParent();
 
-		boolean isValidDestinationPath = path.isAbsolute();
-		if ( !isValidDestinationPath ) {
+			if ( !Files.isDirectory(fileRoot) ) {
+				return false;
+			}
+
+			boolean isValidFileName = validateFileName(fileName);
+
+			if ( !isValidFileName ) {
+				return false;
+			}
+
+			boolean isValidDestinationPath = path.isAbsolute();
+			if ( !isValidDestinationPath ) {
+				return false;
+			}
+		} catch ( RuntimeException e ) {
 			return false;
 		}
 
@@ -52,7 +56,7 @@ public class Validator {
 		if ( name.matches(".*[\\\\/:*?\"<>|].*") ) {
 			return false;
 		}
-		if(name.startsWith(".")||name.endsWith(".") ||name.startsWith(" ") ||name.endsWith(" ") ) {
+		if ( name.startsWith(".") || name.endsWith(".") || name.startsWith(" ") || name.endsWith(" ") ) {
 			return false;
 		}
 
@@ -62,7 +66,7 @@ public class Validator {
 
 	public boolean checkExistingFile(String address) {
 		Path path = Path.of(address);
-		return Files.exists(path);
+		return Files.exists(path)&&Files.isRegularFile(path);
 	}
 
 	public boolean checkKey(String key) {
