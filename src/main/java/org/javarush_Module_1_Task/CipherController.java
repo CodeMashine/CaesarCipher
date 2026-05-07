@@ -1,8 +1,8 @@
 package org.javarush_Module_1_Task;
 
-import org.javarush_Module_1_Task.worker.Cipher;
-import org.javarush_Module_1_Task.worker.FileManager;
-import org.javarush_Module_1_Task.worker.Validator;
+import org.javarush_Module_1_Task.workers.Cipher;
+import org.javarush_Module_1_Task.workers.FileManager;
+import org.javarush_Module_1_Task.workers.Validator;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;

@@ -1,4 +1,4 @@
-package org.javarush_Module_1_Task.worker;
+package org.javarush_Module_1_Task.workers;
 
 import java.util.HashMap;
 import java.util.Map;

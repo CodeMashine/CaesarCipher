@@ -102,7 +102,8 @@ public class Gui {
 			col.setPercentWidth(10);
 			pane.getColumnConstraints().add(col);
 		}
-		for ( int i = 0; i < 5; i++ ) {
+
+		for ( int i = 0; i < 6; i++ ) {
 			RowConstraints row = new RowConstraints();
 			row.setPercentHeight(20);
 			pane.getRowConstraints().add(row);
@@ -110,71 +111,50 @@ public class Gui {
 
 		Label titleScene = new Label(title);
 		titleScene.setStyle("-fx-font-size: 18; -fx-font-weight: bold;");
-		titleScene.setAlignment(Pos.CENTER);
-		pane.add(titleScene, 5, 0,1,1);
+//		titleScene.setAlignment(Pos.CENTER);
+		pane.add(titleScene, 4, 0, 3, 1);
 
-		Label sourseLabel = new Label("Source");
-		pane.add(sourseLabel, 1, 1);
-		TextField sourceField = new TextField();
-		pane.add(sourceField, 2, 1,6,1);
-		Label errorSourceLabel = new Label("");
-		pane.add(errorSourceLabel, 8, 1,2,1);
+		FieldBlock sourceBlock = new FieldBlock("Source", 1, 1, 6, 2);
 
-		sourceField.setOnMouseClicked(event -> {
-			errorSourceLabel.setText("");
-		});
+		sourceBlock.insert(pane);
 
-		Label targetLabel = new Label("Destination");
-		pane.add(targetLabel, 1, 2);
-		TextField targetField = new TextField();
-		pane.add(targetField, 2, 2,6,1);
-		Label errorTargetLabel = new Label("");
-		pane.add(errorTargetLabel,8, 2,2,1);
+		FieldBlock destinationBlock = new FieldBlock("Destination", 1, 2, 6, 2);
 
-		targetField.setOnMouseClicked(event -> {
-			errorTargetLabel.setText("");
-		});
+		destinationBlock.insert(pane);
 
-		Label keyLabel = new Label("Key");
-		pane.add(keyLabel, 1, 3);
-		TextField keyField = new TextField();
-		pane.add(keyField, 2, 3);
-		Label errorKeyLabel = new Label("");
-		pane.add(errorKeyLabel, 3, 3);
+		FieldBlock keyBlock = new FieldBlock("Key", 1, 3, 1, 2);
 
-		keyField.setOnMouseClicked(event -> {
-			errorKeyLabel.setText("");
-		});
-
+		keyBlock.insert(pane);
 
 		if ( paneType == PANES.BRUT_FORCE ) {
-			keyLabel.setVisible(false);
-			keyField.setVisible(false);
+			keyBlock.setVisible(false);
 		}
 
 		Button workButton = new Button(buttonName);
+
 		workButton.setOnAction(e -> {
-			String source = sourceField.getText();
-			String destination = targetField.getText();
-			String key = keyField.getText();
+			String source = sourceBlock.getText();
+			String destination = destinationBlock.getText();
+			String key = keyBlock.getText();
 
 			boolean isSourceExist = cipherController.validator.checkExistingFile(source);
 			boolean isValidDestPath = cipherController.validator.validateDestinationPath(destination);
 
 			if ( !isSourceExist ) {
-				errorSourceLabel.setText("Source is not exist");
+				sourceBlock.setErrorFieldMessage("Source is not exist");
 				return;
 			}
 
 			if ( !isValidDestPath ) {
-				errorTargetLabel.setText("Invalid destination path");
+				destinationBlock.setErrorFieldMessage("Invalid destination path");
 				return;
 			}
+
 			if ( paneType != PANES.BRUT_FORCE ) {
-				key = keyField.getText();
+				key = keyBlock.getText();
 				boolean isValidKey = cipherController.validator.checkKey(key);
 				if ( !isValidKey ) {
-					errorKeyLabel.setText("Invalid key");
+					keyBlock.setErrorFieldMessage("Invalid key");
 					return;
 				}
 			}
@@ -182,19 +162,18 @@ public class Gui {
 			if ( paneType == PANES.ENCRYPT ) {
 				int keyValue = Integer.parseInt(key);
 				cipherController.encrypt(source, destination, keyValue);
-			} else if (paneType == PANES.DECRYPT){
+			} else if ( paneType == PANES.DECRYPT ) {
 				int keyValue = Integer.parseInt(key);
 				cipherController.decrypt(source, destination, keyValue);
-			}
-			else{
+			} else {
 				cipherController.brutForce(source, destination);
 			}
 		});
 
-		pane.add(workButton, 1, 4 , 2 ,1) ;
+		pane.add(workButton, 3, 4, 2, 1);
 
 		Button returnButton = createNavigateButton("Home", PANES.MAIN);
-		pane.add(returnButton, 5, 4 , 2 , 1);
+		pane.add(returnButton, 6, 4, 2, 1);
 
 		return pane;
 	}
@@ -224,6 +203,53 @@ public class Gui {
 			} else {
 				panes.get(pane).setVisible(false);
 			}
+		}
+	}
+
+	private class FieldBlock {
+		private int row;
+		private int startCol;
+		private int errorFieldLength;
+		private int addressFieldLength;
+		private Label nameLabel;
+		private TextField addressField;
+		private Label errorLabel;
+
+		public FieldBlock(String name, int col, int row, int addressFieldLength, int errorFieldLength) {
+			this.nameLabel = new Label(name);
+			this.addressField = new TextField();
+			this.errorLabel = new Label("");
+			this.addressFieldLength = addressFieldLength;
+			this.errorFieldLength = errorFieldLength;
+			this.row = row;
+			this.startCol = col;
+		}
+
+		public void insert(GridPane pane) {
+			resetErrorLabelOnMouseClicked();
+			pane.add(nameLabel, startCol, row);
+			pane.add(addressField, ++startCol, row, addressFieldLength, 1);
+			pane.add(errorLabel, startCol + addressFieldLength, row, errorFieldLength, 1);
+		}
+
+		private void resetErrorLabelOnMouseClicked() {
+			addressField.setOnMouseClicked(event -> {
+				errorLabel.setText("");
+			});
+		}
+
+		public void setErrorFieldMessage(String message) {
+			errorLabel.setText(message);
+		}
+
+		public String getText() {
+			return addressField.getText();
+		}
+
+		public void setVisible(boolean visible) {
+			nameLabel.setVisible(visible);
+			addressField.setVisible(visible);
+			errorLabel.setVisible(visible);
 		}
 	}
 }

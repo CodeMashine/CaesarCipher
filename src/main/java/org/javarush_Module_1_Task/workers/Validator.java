@@ -1,4 +1,4 @@
-package org.javarush_Module_1_Task.worker;
+package org.javarush_Module_1_Task.workers;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -20,6 +20,10 @@ public class Validator {
 
 		try {
 			Path path = Path.of(destinationPath);
+
+			if ( !path.isAbsolute() ) {
+				path = path.toAbsolutePath();
+			}
 
 			String fileName = path.getFileName().toString();
 			Path fileRoot = path.getParent();
@@ -66,7 +70,12 @@ public class Validator {
 
 	public boolean checkExistingFile(String address) {
 		Path path = Path.of(address);
-		return Files.exists(path)&&Files.isRegularFile(path);
+
+		if ( !path.isAbsolute() ) {
+			path = path.toAbsolutePath();
+		}
+
+		return Files.exists(path) && Files.isRegularFile(path);
 	}
 
 	public boolean checkKey(String key) {
