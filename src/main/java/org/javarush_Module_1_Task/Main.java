@@ -1,17 +1,38 @@
 package org.javarush_Module_1_Task;
 
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
-public class Main {
-	public static void main(String[] args) {
-		//TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
-		// to see how IntelliJ IDEA suggests fixing it.
-		System.out.printf("Hello and welcome!");
+import javafx.application.Application;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+import org.javarush_Module_1_Task.workers.Alphabet;
+import org.javarush_Module_1_Task.workers.Cipher;
+import org.javarush_Module_1_Task.workers.FileManager;
+import org.javarush_Module_1_Task.workers.Validator;
 
-		for ( int i = 1; i <= 5; i++ ) {
-			//TIP Press <shortcut actionId="Debug"/> to start debugging your code. We have set one <icon src="AllIcons.Debugger.Db_set_breakpoint"/> breakpoint
-			// for you, but you can always add more by pressing <shortcut actionId="ToggleLineBreakpoint"/>.
-			System.out.println("i = " + i);
-		}
+public class Main extends Application {
+	static char[] alphabet = {'А', 'Б', 'В', 'Г', 'Д', 'Е', 'Ё', 'Ж', 'З', 'И', 'Й', 'К', 'Л', 'М', 'Н', 'О', 'П', 'Р', 'С', 'Т', 'У', 'Ф', 'Х', 'Ц', 'Ч', 'Ш', 'Щ', 'Ъ', 'Ы', 'Ь', 'Э', 'Я', 'а', 'б', 'в', 'г', 'д', 'е', 'ё', 'ж', 'з', 'и', 'й', 'к', 'л', 'м', 'н', 'о', 'п', 'р', 'с', 'т', 'у', 'ф', 'х', 'ц', 'ч', 'ш', 'щ', 'ъ', 'ы', 'ь', 'э', 'я', '.', ',', '«', '»', '"', '\'', ':', '!', '?', ' ', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
+
+	static String[] templatePhrases = {" и ", " в ", " к ", ", а", " или ", " это " , " не " , " у "};
+
+
+	@Override
+	public void start(Stage stage) {
+		Alphabet alphabetInstance = new Alphabet(alphabet);
+		Cipher cipher = new Cipher(templatePhrases,alphabetInstance);
+		FileManager fileManager = new FileManager();
+		Validator validator = new Validator(alphabet.length);
+		CipherController caesarController = new CipherController(cipher, fileManager, validator);
+		Gui gui = new Gui(caesarController);
+
+		Scene guiScene = gui.createScene();
+		stage.setScene(guiScene);
+		stage.show();
 	}
+
+	public static void main(String[] args) {
+		launch(args);
+	}
+
+
 }
+
+
